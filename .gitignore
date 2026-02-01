@@ -16,6 +16,7 @@ dist
 
 # misc
 .DS_Store
+.cursor/
 *.pem
 
 # debug
