@@ -12,6 +12,18 @@ export type RecommendedCourse = {
   reason: string
 }
 
+/** Pace: normal = 3 courses/semester, speedrun = more. */
+export type Pace = "normal" | "speedrun"
+
+/** One semester in the plan: which courses to take that semester. */
+export type SemesterPlanItem = {
+  year: number
+  term: string
+  label: string
+  courses: string[]
+  fromPrediction?: boolean
+}
+
 /** Response from recommend-courses API. */
 export type RecommendCoursesResponse = {
   major: string
@@ -21,4 +33,6 @@ export type RecommendCoursesResponse = {
   /** Units remaining until 120 credits (SFU typical degree). */
   credits_remaining: number
   recommended_courses: RecommendedCourse[]
+  /** Semester-by-semester plan (which recommended courses are offered when). */
+  semester_plan: SemesterPlanItem[]
 }

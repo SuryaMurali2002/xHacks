@@ -19,6 +19,7 @@ const SUGGESTED_ROLES = [
 export default function Home() {
   const [parsedTranscript, setParsedTranscript] = useState<ParsedTranscript | null>(null)
   const [targetRole, setTargetRole] = useState("")
+  const [pace, setPace] = useState<"normal" | "speedrun">("normal")
   const [recommendResult, setRecommendResult] = useState<RecommendCoursesResponse | null>(null)
   const [loadingRecommend, setLoadingRecommend] = useState(false)
   const [recommendError, setRecommendError] = useState<string | null>(null)
@@ -38,7 +39,7 @@ export default function Home() {
       const res = await fetch("/api/recommend-courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ parsedTranscript, targetRole: role }),
+        body: JSON.stringify({ parsedTranscript, targetRole: role, pace }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -109,6 +110,34 @@ export default function Home() {
                 <option key={r} value={r} />
               ))}
             </datalist>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-400">
+                Pace
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="pace"
+                    checked={pace === "normal"}
+                    onChange={() => setPace("normal")}
+                    className="rounded border-slate-600 bg-slate-900 text-emerald-500 focus:ring-emerald-500"
+                  />
+                  <span className="text-slate-300 text-sm">Normal (3 courses/semester)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="pace"
+                    checked={pace === "speedrun"}
+                    onChange={() => setPace("speedrun")}
+                    className="rounded border-slate-600 bg-slate-900 text-emerald-500 focus:ring-emerald-500"
+                  />
+                  <span className="text-slate-300 text-sm">Speedrun (5 courses/semester)</span>
+                </label>
+              </div>
+            </div>
 
             {parsedTranscript && (
               <p className="text-slate-400 text-sm">

@@ -22,7 +22,7 @@ const item = {
 }
 
 export function CourseResults({ result, onStartOver }: CourseResultsProps) {
-  const { major, target_role, total_credits_completed = 0, credits_remaining = 0, recommended_courses } = result
+  const { major, target_role, total_credits_completed = 0, credits_remaining = 0, recommended_courses, semester_plan = [] } = result
 
   return (
     <motion.div
@@ -74,6 +74,42 @@ export function CourseResults({ result, onStartOver }: CourseResultsProps) {
           </li>
         </ul>
       </motion.div>
+
+      {semester_plan.length > 0 && (
+        <motion.div
+          className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 space-y-3 shadow-lg shadow-black/20"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08, duration: 0.4 }}
+        >
+          <h3 className="font-medium text-slate-200 text-sm">
+            Semester plan (when courses are offered)
+          </h3>
+          <p className="text-slate-400 text-xs">
+            Based on SFU Course Outlines API; future semesters use prediction from past offerings.
+          </p>
+          <ul className="space-y-2">
+            {semester_plan.map((s, i) => (
+              <li
+                key={`${s.year}-${s.term}-${i}`}
+                className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/40 px-3 py-2 text-sm"
+              >
+                <span className="font-medium text-slate-200 shrink-0">{s.label}</span>
+                {s.fromPrediction ? (
+                  <span className="shrink-0 text-xs font-medium text-amber-400">Predicted</span>
+                ) : (
+                  <span className="shrink-0 text-xs font-medium text-emerald-400">Official</span>
+                )}
+                {s.courses.length > 0 ? (
+                  <span className="text-slate-300">{s.courses.join(", ")}</span>
+                ) : (
+                  <span className="text-slate-500">—</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      )}
 
       {recommended_courses.length === 0 ? (
         <motion.p
