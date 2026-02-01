@@ -30,27 +30,64 @@ export type OfferingsCache = {
 }
 
 function getCachePath(): string {
+  // #region agent log
+  console.log('[DEBUG][B] getCachePath called', { cwd: process.cwd() });
+  fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'sfuOfferings.ts:getCachePath',message:'getCachePath called',data:{cwd:process.cwd()},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B'})}).catch(()=>{});
+  // #endregion
   const dir = path.join(process.cwd(), "data")
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+  try {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+  } catch (e) {
+    // #region agent log
+    console.log('[DEBUG][B] mkdirSync FAILED', { error: String(e) });
+    fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'sfuOfferings.ts:getCachePath:mkdir',message:'mkdirSync FAILED',data:{error:String(e)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
+  }
   return path.join(dir, CACHE_FILENAME)
 }
 
 export function readCache(): OfferingsCache | null {
+  // #region agent log
+  console.log('[DEBUG][C] readCache called');
+  fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'sfuOfferings.ts:readCache',message:'readCache called',data:{},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C'})}).catch(()=>{});
+  // #endregion
   try {
     const p = getCachePath()
-    if (!fs.existsSync(p)) return null
+    if (!fs.existsSync(p)) {
+      // #region agent log
+      console.log('[DEBUG][C] cache file does not exist', { path: p });
+      fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'sfuOfferings.ts:readCache',message:'cache file does not exist',data:{path:p},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C'})}).catch(()=>{});
+      // #endregion
+      return null
+    }
     const raw = fs.readFileSync(p, "utf-8")
     const data = JSON.parse(raw) as OfferingsCache
     if (!data.semesters || typeof data.semesters !== "object") return null
     return data
-  } catch {
+  } catch (e) {
+    // #region agent log
+    console.log('[DEBUG][C] readCache exception', { error: String(e) });
+    fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'sfuOfferings.ts:readCache:catch',message:'readCache exception',data:{error:String(e)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     return null
   }
 }
 
 export function writeCache(data: OfferingsCache): void {
   const p = getCachePath()
-  fs.writeFileSync(p, JSON.stringify(data, null, 2), "utf-8")
+  try {
+    fs.writeFileSync(p, JSON.stringify(data, null, 2), "utf-8")
+    // #region agent log
+    console.log('[DEBUG][A] writeCache SUCCESS', { path: p });
+    fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'sfuOfferings.ts:writeCache',message:'writeCache SUCCESS',data:{path:p},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+  } catch (e) {
+    // #region agent log
+    console.log('[DEBUG][A] writeCache FAILED', { error: String(e), path: p });
+    fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'sfuOfferings.ts:writeCache:catch',message:'writeCache FAILED',data:{error:String(e),path:p},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    throw e; // re-throw to preserve original behavior for now
+  }
 }
 
 function semesterKey(year: number, term: string): string {
