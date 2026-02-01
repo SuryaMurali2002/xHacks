@@ -83,10 +83,10 @@ export function writeCache(data: OfferingsCache): void {
     // #endregion
   } catch (e) {
     // #region agent log
-    console.log('[DEBUG][A] writeCache FAILED', { error: String(e), path: p });
-    fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'sfuOfferings.ts:writeCache:catch',message:'writeCache FAILED',data:{error:String(e),path:p},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
+    console.log('[DEBUG][A] writeCache FAILED (ignored)', { error: String(e), path: p });
+    fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'sfuOfferings.ts:writeCache:catch',message:'writeCache FAILED (ignored)',data:{error:String(e),path:p},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
     // #endregion
-    throw e; // re-throw to preserve original behavior for now
+    // Do not re-throw: Vercel/serverless filesystem is read-only; skip caching and continue
   }
 }
 
