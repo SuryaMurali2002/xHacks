@@ -129,7 +129,7 @@ export function UploadTranscript({ onParsed }: UploadTranscriptProps) {
           Upload your SFU transcript PDF
         </p>
         <p className="text-sm text-slate-500 mb-4">
-          We'll extract your major and completed courses (no AI until after extraction).
+          We'll extract your major and completed courses.
         </p>
         <button
           type="button"
@@ -171,11 +171,11 @@ export function UploadTranscript({ onParsed }: UploadTranscriptProps) {
       <AnimatePresence>
         {showSuccess && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
+            initial={{ opacity: 0, y: 10, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: -5, x: "-50%" }}
             transition={{ duration: 0.25 }}
-            className="fixed top-8 left-1/2 -translate-x-1/2 z-50"
+            className="fixed top-8 left-1/2 z-50"
           >
             <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-800/95 border border-slate-600 shadow-lg shadow-black/30 text-slate-100">
               <svg
