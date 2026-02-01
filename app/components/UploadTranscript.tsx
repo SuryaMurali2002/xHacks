@@ -40,6 +40,7 @@ export function UploadTranscript({ onParsed }: UploadTranscriptProps) {
   const [error, setError] = useState<string | null>(null)
   const [showSuccess, setShowSuccess] = useState(false)
   const [drag, setDrag] = useState(false)
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -72,6 +73,7 @@ export function UploadTranscript({ onParsed }: UploadTranscriptProps) {
         completed_courses: Array.isArray(data.completed_courses) ? data.completed_courses : [],
         total_credits_completed: typeof data.total_credits_completed === "number" ? data.total_credits_completed : 0,
       })
+      setSelectedFileName(file.name)
       setShowSuccess(true)
     } catch {
       setError("Network error. Please try again.")
@@ -140,6 +142,16 @@ export function UploadTranscript({ onParsed }: UploadTranscriptProps) {
               <Spinner />
               Parsing…
             </>
+          ) : selectedFileName ? (
+            <>
+              <svg className="h-5 w-5 text-emerald-200 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span className="truncate max-w-[200px]" title={selectedFileName}>
+                {selectedFileName.length > 24 ? `${selectedFileName.slice(0, 21)}…` : selectedFileName}
+              </span>
+              <span className="text-emerald-200/90 text-sm font-normal">Change file</span>
+            </>
           ) : (
             "Choose PDF"
           )}
@@ -163,7 +175,7 @@ export function UploadTranscript({ onParsed }: UploadTranscriptProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
+            className="fixed top-8 left-1/2 -translate-x-1/2 z-50"
           >
             <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-800/95 border border-slate-600 shadow-lg shadow-black/30 text-slate-100">
               <svg

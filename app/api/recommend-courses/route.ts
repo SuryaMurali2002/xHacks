@@ -119,10 +119,6 @@ async function buildSemesterPlan(
 }
 
 export async function POST(req: Request) {
-  // #region agent log
-  console.log('[DEBUG][D] POST handler started', { hasApiKey: !!process.env.OPENAI_API_KEY?.trim() });
-  fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'route.ts:POST',message:'POST handler started',data:{hasApiKey:!!process.env.OPENAI_API_KEY?.trim()},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D'})}).catch(()=>{});
-  // #endregion
   try {
     if (!process.env.OPENAI_API_KEY?.trim()) {
       return NextResponse.json(
@@ -245,10 +241,6 @@ Rank the TOP ${TOP_N} most useful for this role. Return JSON: {"courses":[{"cour
     }
     return NextResponse.json(response)
   } catch (err) {
-    // #region agent log
-    console.log('[DEBUG][ALL] POST handler EXCEPTION', { error: String(err), stack: err instanceof Error ? err.stack : undefined });
-    fetch('http://127.0.0.1:7242/ingest/cf8f17ee-b756-40aa-b46c-a22e299d6c19',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'route.ts:POST:catch',message:'POST handler EXCEPTION',data:{error:String(err),stack:err instanceof Error ? err.stack : undefined},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'ALL'})}).catch(()=>{});
-    // #endregion
     if (err instanceof Error) {
       return NextResponse.json(
         { error: process.env.NODE_ENV === "development" ? err.message : "Failed to recommend courses" },
