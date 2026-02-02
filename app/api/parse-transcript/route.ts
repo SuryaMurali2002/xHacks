@@ -70,9 +70,11 @@ export async function POST(req: Request) {
     let completed_courses = extractCompletedCoursesFromTranscript(rawText)
 
     // 2) If regex found too few courses (pdf-parse spacing/format varies), use OpenAI to extract courses
+    const hasLlmKey =
+      process.env.OPENAI_API_KEY?.trim() || process.env.OPENROUTER_API_KEY?.trim()
     if (
       completed_courses.length < MIN_COURSES_FOR_LOCAL_ONLY &&
-      process.env.OPENAI_API_KEY?.trim()
+      hasLlmKey
     ) {
       const transcriptForLlm = rawText.slice(0, MAX_TRANSCRIPT_CHARS_FOR_LLM)
       try {
@@ -105,7 +107,7 @@ export async function POST(req: Request) {
 
     // 3) Fallback to OpenAI only for major/credits if regex missed them
     if (!student_major || total_credits_completed == null) {
-      if (process.env.OPENAI_API_KEY?.trim()) {
+      if (hasLlmKey) {
         const snippet = rawText.slice(0, FALLBACK_HEADER_CHARS)
         const responseText = await promptOpenAI(`Transcript:\n${snippet}`, {
           system: MAJOR_CREDITS_SYSTEM,

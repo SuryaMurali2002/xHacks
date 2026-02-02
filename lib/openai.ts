@@ -1,15 +1,19 @@
 /**
  * OpenAI API for transcript parsing, department mapping, and course ranking.
- * Set OPENAI_API_KEY in .env.local.
+ * Set OPENAI_API_KEY (OpenAI) or OPENROUTER_API_KEY (OpenRouter free models) in .env.local.
  */
 
 import OpenAI from "openai"
 
+const useOpenRouter = !!process.env.OPENROUTER_API_KEY?.trim()
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: useOpenRouter ? process.env.OPENROUTER_API_KEY : process.env.OPENAI_API_KEY,
+  ...(useOpenRouter ? { baseURL: "https://openrouter.ai/api/v1" } : {}),
 })
 
-const DEFAULT_MODEL = process.env.OPENAI_MODEL ?? "gpt-4o-mini"
+const DEFAULT_MODEL =
+  process.env.OPENAI_MODEL ??
+  (useOpenRouter ? "meta-llama/llama-3.3-70b-instruct:free" : "gpt-4o-mini")
 
 export type ChatOptions = {
   model?: string

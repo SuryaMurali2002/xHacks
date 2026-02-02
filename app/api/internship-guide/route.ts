@@ -30,9 +30,14 @@ function formatReviewForPrompt(r: {
 
 export async function POST(req: Request) {
   try {
-    if (!process.env.OPENAI_API_KEY?.trim()) {
+    const hasKey =
+      process.env.OPENAI_API_KEY?.trim() || process.env.OPENROUTER_API_KEY?.trim()
+    if (!hasKey) {
       return NextResponse.json(
-        { error: "OPENAI_API_KEY is not set." },
+        {
+          error:
+            "No API key set. Add OPENAI_API_KEY or OPENROUTER_API_KEY to your environment.",
+        },
         { status: 503 }
       )
     }

@@ -120,9 +120,14 @@ async function buildSemesterPlan(
 
 export async function POST(req: Request) {
   try {
-    if (!process.env.OPENAI_API_KEY?.trim()) {
+    const hasKey =
+      process.env.OPENAI_API_KEY?.trim() || process.env.OPENROUTER_API_KEY?.trim()
+    if (!hasKey) {
       return NextResponse.json(
-        { error: "OPENAI_API_KEY is not set. Add it to .env.local and restart the dev server." },
+        {
+          error:
+            "No API key set. Add OPENAI_API_KEY or OPENROUTER_API_KEY to .env.local (or your deployment env).",
+        },
         { status: 503 }
       )
     }
